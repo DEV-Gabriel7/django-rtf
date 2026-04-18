@@ -72,7 +72,7 @@ class UserViewSetTest(TestCase):
     def test_list_users(self):
         response = self.client.get('/users/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
 
     def test_create_user(self):
         response = self.client.post(
@@ -114,7 +114,7 @@ class OrderViewSetTest(TestCase):
     def test_list_orders(self):
         response = self.client.get('/orders/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
 
     def test_create_order(self):
         response = self.client.post(

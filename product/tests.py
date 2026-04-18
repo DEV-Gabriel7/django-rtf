@@ -71,7 +71,7 @@ class CategoryViewSetTest(TestCase):
     def test_list_categories(self):
         response = self.client.get('/categories/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
 
     def test_create_category(self):
         response = self.client.post(
@@ -114,7 +114,7 @@ class ProductViewSetTest(TestCase):
     def test_list_products(self):
         response = self.client.get('/products/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
 
     def test_create_product(self):
         response = self.client.post(
@@ -145,3 +145,29 @@ class ProductViewSetTest(TestCase):
         response = self.client.delete(f'/products/{self.product.id}/')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Product.objects.count(), 0)
+
+    def test_pagination_products(self):
+        # Criar mais produtos para testar paginação
+        for i in range(15):
+            Product.objects.create(
+                name=f'Product {i+2}',
+                description=f'Description {i+2}',
+                price=10.0 + i,
+                category=self.category,
+            )
+        
+        # Testar primeira página
+        response = self.client.get('/products/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 16)  # 1 original + 15 criados
+        self.assertEqual(len(response.data['results']), 10)  # PAGE_SIZE = 10
+        self.assertIsNotNone(response.data['next'])
+        self.assertIsNone(response.data['previous'])
+        
+        # Testar segunda página
+        response = self.client.get('/products/?page=2')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 16)
+        self.assertEqual(len(response.data['results']), 6)  # Restante
+        self.assertIsNone(response.data['next'])
+        self.assertIsNotNone(response.data['previous'])
