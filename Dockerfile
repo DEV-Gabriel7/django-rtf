@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     POETRY_VERSION=1.8.4 \
     POETRY_HOME="/opt/poetry" \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_VIRTUALENVS_CREATE=false \
     PATH="/opt/poetry/bin:$PATH"
 
 # Instalar dependências e o Poetry
@@ -31,8 +31,13 @@ RUN poetry install --no-dev
 # Copiar código-fonte do projeto
 COPY . .
 
+# Copiar e habilitar entrypoint
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Expor a porta padrão do Django
 EXPOSE 8000
 
-# Comando padrão para rodar o servidor
+# Definir entrypoint para aplicar migrações antes de iniciar
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

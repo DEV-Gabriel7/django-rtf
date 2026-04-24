@@ -8,6 +8,7 @@ authors = ["Gabriel"]
 python = "^3.12"
 django = ">=6.0.3,<7.0.0"
 djangorestframework = ">=3.17.1,<4.0.0"
+psycopg2-binary = ">=2.9,<3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=9.0.2,<10.0.0"
