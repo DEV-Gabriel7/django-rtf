@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DJANGO_SETTINGS_MODULE: config.settings
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry install --no-interaction --no-ansi --with dev
+          poetry install --no-root --no-interaction --no-ansi --with dev
 
       - name: Run tests
         run: |
