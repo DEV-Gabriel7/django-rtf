@@ -3,7 +3,6 @@ Django settings for config project.
 """
 
 import os
-import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -58,9 +57,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# 🔥 DATABASE (CORRIGIDO PARA CI)
+# 🔥 DATABASE (AJUSTE DEFINITIVO PARA CI)
 
-if 'pytest' in sys.argv:
+if os.environ.get('CI') == 'true':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

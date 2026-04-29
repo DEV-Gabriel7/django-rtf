@@ -25,5 +25,6 @@ jobs:
       - name: Rodar testes
         env:
           DJANGO_SETTINGS_MODULE: config.settings
+          CI: "true"
         run: |
           pytest
