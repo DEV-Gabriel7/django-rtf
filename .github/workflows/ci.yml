@@ -6,46 +6,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:15
-        env:
-          POSTGRES_DB: django_rtf
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    env:
-      DJANGO_SETTINGS_MODULE: config.settings
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      POSTGRES_DB: django_rtf
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
+
     steps:
-      - name: Checkout repository
+      - name: Clonar repositório
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
-      - name: Install Poetry
+      - name: Instalar dependências
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install -r requirements.txt
 
-      - name: Install dependencies
+      - name: Rodar testes
         run: |
-          poetry install --no-root --no-interaction --no-ansi --with dev
-
-      - name: Run tests
-        run: |
-          poetry run pytest
+          pytest
