@@ -23,5 +23,7 @@ jobs:
           pip install pytest django djangorestframework
 
       - name: Rodar testes
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings
         run: |
           pytest
