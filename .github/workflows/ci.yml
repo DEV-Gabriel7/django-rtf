@@ -14,7 +14,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Instalar Poetry
         run: pip install poetry
@@ -23,7 +23,7 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Instalar dependências
-        run: poetry install --no-interaction --no-ansi
+        run: poetry install --no-interaction --no-ansi --no-root
 
       - name: Rodar testes
         env:
