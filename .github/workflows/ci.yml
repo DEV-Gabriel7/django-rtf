@@ -23,7 +23,9 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Instalar dependências
-        run: poetry install --no-interaction --no-ansi --no-root
+        run: |
+          poetry install --no-interaction --no-ansi --no-root
+          poetry show
 
       - name: Rodar testes
         env:
