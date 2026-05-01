@@ -1,17 +1,10 @@
-"""
-Django settings for config project.
-"""
-
 import os
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-SECRET_KEY = 'django-insecure-ppq4&)mdwoc3bez)=_sq!t*)gvehv^!!7!u+=#6tog-)m_71%h'
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 # Application definition
 
@@ -30,6 +23,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,6 +52,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # 🔥 DATABASE (AJUSTE DEFINITIVO PARA CI)
+import dj_database_url
 
 if os.environ.get('CI') == 'true':
     DATABASES = {
@@ -68,14 +63,10 @@ if os.environ.get('CI') == 'true':
     }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('POSTGRES_DB', 'django_rtf'),
-            'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-            'HOST': os.environ.get('POSTGRES_HOST', 'db'),
-            'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-        }
+        'default': dj_database_url.config(
+            default='sqlite:///db.sqlite3',
+            conn_max_age=600,
+        )
     }
 
 # Password validation
@@ -120,3 +111,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
